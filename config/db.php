@@ -1,8 +1,6 @@
 <?php
 
-include('config/autoload.php');
-
-$pdo = new PDO(
+$db = new PDO(
     'mysql:dbname=tp_mini_jeu;host=localhost',
     'root',
     '',

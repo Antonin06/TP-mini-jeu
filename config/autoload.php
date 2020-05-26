@@ -1,9 +1,9 @@
 <?php
 
-function loadClass($class)
+include('classes/PersonnagesManager.php');
+
+function loadClass($classe)
 {
-    require_once('classes/'.$class.'.php');
+    require ('classes/'.$classe.'.php');
 }
-
-
 spl_autoload_register('loadClass');

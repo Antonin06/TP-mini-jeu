@@ -1,38 +1,95 @@
 <?php
 class Personnage
 {
-  private $_id,
-  $_dammages,
-  $_name;
+  private $degats,
+          $id,
+          $nom,
+          $level,
+          $experience;
 
-  const CEST_MOI = 1;
-  const PERSONNAGE_TUE = 2;
-  const PERSONNAGE_FRAPPE = 3;
+  const CEST_MOI = 1; // Constante renvoyée par la méthode `frapper` si on se frappe soi-même.
+  const PERSONNAGE_TUE = 2; // Constante renvoyée par la méthode `frapper` si on a tué le personnage en le frappant.
+  const PERSONNAGE_FRAPPE = 3; // Constante renvoyée par la méthode `frapper` si on a bien frappé le personnage.
 
+
+  public function __construct(array $donnees)
+  {
+    $this->hydrate($donnees);
+  }
+  public function nomValide()
+  {
+    return !empty($this->nom);
+  }
   public function frapper(Personnage $perso)
   {
-    //code
+    if ($perso->id() == $this->id)
+    {
+      return self::CEST_MOI;
+    }
+
+    // On indique au personnage qu'il doit recevoir des dégâts.
+    // Puis on retourne la valeur renvoyée par la méthode : self::PERSONNAGE_TUE ou self::PERSONNAGE_FRAPPE
+    return $perso->recevoirDegats();
+  }
+
+  public function hydrate(array $donnees)
+  {
+    foreach ($donnees as $key => $value)
+    {
+      $method = 'set'.ucfirst($key);
+
+      if (method_exists($this, $method))
+      {
+        $this->$method($value);
+      }
+    }
   }
 
   public function recevoirDegats()
   {
-    //code
+    $this->degats += 5;
+
+    // Si on a 100 de dégâts ou plus, on dit que le personnage a été tué.
+    if ($this->degats >= 100)
+    {
+      return self::PERSONNAGE_TUE;
+    }
+
+    // Sinon, on se contente de dire que le personnage a bien été frappé.
+    return self::PERSONNAGE_FRAPPE;
   }
+
+
+  // GETTERS //
+
 
   public function degats()
   {
-    return $this->_dammages;
+    return $this->degats;
   }
 
   public function id()
   {
-    return $this->_id;
+    return $this->id;
   }
 
   public function nom()
   {
-    return $this->_name;
+    return $this->nom;
   }
+
+  public function level()
+  {
+    return $this->level;
+  }
+
+  public function experience()
+  {
+    return $this->experience;
+  }
+
+
+    // SETTERS //
 
   public function setDegats($degats)
   {
@@ -40,7 +97,7 @@ class Personnage
 
     if ($degats >= 0 && $degats <= 100)
     {
-      $this->_dammages = $degats;
+      $this->degats = $degats;
     }
   }
 
@@ -50,7 +107,7 @@ class Personnage
 
     if ($id > 0)
     {
-      $this->_id = $id;
+      $this->id = $id;
     }
   }
 
@@ -58,7 +115,28 @@ class Personnage
   {
     if (is_string($nom))
     {
-      $this->_name = $nom;
+      $this->nom = $nom;
     }
   }
+
+  public function setLevel($level)
+  {
+    $level = (int) $level;
+
+    if ($level > 0)
+    {
+      $this->level = $level;
+    }
+  }
+
+  public function setExperience($experience)
+  {
+    $experience = (int) $experience;
+
+    if ($experience > 0)
+    {
+      $this->experience = $experience;
+    }
+  }
+
 }
